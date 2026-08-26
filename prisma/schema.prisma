@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  passwordHash     String?
+  role             String            @default("SEEKER") // SEEKER, OWNER, ADMIN
+  fullName         String
+  phoneNumber      String?
+  avatarUrl        String?
+  emailVerified    Boolean           @default(false)
+  phoneVerified    Boolean           @default(false)
+  identityVerified Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  properties       Property[]
+  favorites        Favorite[]
+  visitRequestsAsSeeker VisitRequest[] @relation("SeekerVisits")
+  visitRequestsAsOwner  VisitRequest[] @relation("OwnerVisits")
+}
+
+model Property {
+  id                 String             @id @default(uuid())
+  ownerId            String
+  owner              User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title              String
+  description        String?
+  propertyType       String             // APARTMENT, HOUSE, VILLA, PG, SINGLE_ROOM, SHARED_ROOM, STUDIO
+  bedroomCount       Int                @default(0)
+  bathroomCount      Int                @default(0)
+  rentAmount         Float
+  securityDeposit    Float?
+  maintenanceCharges Float              @default(0)
+  furnishingStatus   String             // FULLY_FURNISHED, SEMI_FURNISHED, UNFURNISHED
+  availableFrom      DateTime
+  
+  // Location
+  city               String
+  area               String
+  locality           String
+  address            String
+  pincode            String?
+  latitude           Float?
+  longitude          Float?
+
+  // Property Info
+  squareFeet         Int?
+  floorNumber        Int?
+  totalFloors        Int?
+  facing             String?
+  propertyAge        Int?
+
+  status             String             @default("AVAILABLE") // AVAILABLE, PENDING, RENTED, UNAVAILABLE
+  verified           Boolean            @default(false)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  amenities          PropertyAmenity[]
+  images             PropertyImage[]
+  favorites          Favorite[]
+  visitRequests      VisitRequest[]
+}
+
+model PropertyAmenity {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  amenity    String
+  
+  @@unique([propertyId, amenity])
+}
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  imageUrl   String
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  seekerId   String
+  seeker     User     @relation(fields: [seekerId], references: [id], onDelete: Cascade)
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([seekerId, propertyId])
+}
+
+model VisitRequest {
+  id           String   @id @default(uuid())
+  propertyId   String
+  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  seekerId     String
+  seeker       User     @relation("SeekerVisits", fields: [seekerId], references: [id], onDelete: Cascade)
+  ownerId      String
+  owner        User     @relation("OwnerVisits", fields: [ownerId], references: [id], onDelete: Cascade)
+  visitDate    DateTime
+  preferredTime String
+  message      String?
+  status       String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, COMPLETED
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
