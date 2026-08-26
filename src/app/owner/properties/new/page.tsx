@@ -71,7 +71,7 @@ export default function AddPropertyPage() {
                 
                 <div className="space-y-2">
                   <Label>Property Type</Label>
-                  <Select value={propertyType} onValueChange={(value) => setPropertyType(value)}>
+                  <Select value={propertyType} onValueChange={(value) => setPropertyType(value as string)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="APARTMENT">Apartment</SelectItem>
@@ -87,7 +87,7 @@ export default function AddPropertyPage() {
 
                 <div className="space-y-2">
                   <Label>Furnishing</Label>
-                  <Select value={furnishingStatus} onValueChange={(value) => setFurnishingStatus(value)}>
+                  <Select value={furnishingStatus} onValueChange={(value) => setFurnishingStatus(value as string)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="FULLY_FURNISHED">Fully Furnished</SelectItem>
@@ -99,7 +99,7 @@ export default function AddPropertyPage() {
 
                 <div className="space-y-2">
                   <Label>BHK Type</Label>
-                  <Select value={bhkType} onValueChange={(value) => setBhkType(value)}>
+                  <Select value={bhkType} onValueChange={(value) => setBhkType(value as string)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="1">1 BHK</SelectItem>

@@ -60,11 +60,10 @@ export function RequestVisitButton({ propertyId, ownerId, isSeeker }: RequestVis
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-full text-lg h-12">Request Visit</Button>
-      </DialogTrigger>
-      <DialogContent>
+    <>
+      <Button variant="outline" className="w-full text-lg h-12" onClick={() => setOpen(true)}>Request Visit</Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
         <DialogHeader>
           <DialogTitle>Schedule a Visit</DialogTitle>
           <DialogDescription>Let the owner know when you'd like to see the property.</DialogDescription>
@@ -90,5 +89,6 @@ export function RequestVisitButton({ propertyId, ownerId, isSeeker }: RequestVis
         </form>
       </DialogContent>
     </Dialog>
+    </>
   )
 }
